@@ -26,7 +26,7 @@
             background: var(--primary-pink);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            z-index: 5000; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            z-index: 5000; transition: transform 0.8s ease-in-out;
         }
 
         .btn {
@@ -36,28 +36,35 @@
             transition: 0.3s;
         }
 
-        /* --- MAIN GALLERY --- */
+        /* --- MAIN CONTENT & PHOTO GRID (FIXED) --- */
         #main-content { opacity: 0; padding: 20px; transition: opacity 1s ease; }
         
         .gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: flex;
+            flex-wrap: wrap; /* Pinaka-importante para sa 7 pics */
+            justify-content: center; /* I-center ang mga pics sa bawat row */
             gap: 15px;
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto 30px auto;
-        }
-
-        @media (min-width: 600px) {
-            .gallery { grid-template-columns: repeat(4, 1fr); }
         }
 
         .photo-card {
             background: white; padding: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transform: translateY(20px) rotate(var(--r));
             opacity: 0; transition: 0.5s;
+            width: calc(50% - 20px); /* 2 columns sa mobile */
+            max-width: 200px; /* Limit para hindi sobrang laki sa desktop */
         }
+
+        /* Desktop: 3 o 4 columns depende sa lapad */
+        @media (min-width: 600px) {
+            .photo-card { width: calc(25% - 20px); }
+        }
+
         .gallery.animate .photo-card { transform: translateY(0) rotate(var(--r)); opacity: 1; }
-        .photo-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 2px; }
+        
+        .photo-card:hover { transform: scale(1.05) rotate(0deg) !important; z-index: 10; }
+        .photo-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 2px; }
 
         /* --- ZOOM MODAL --- */
         #zoom-overlay {
@@ -65,52 +72,45 @@
             background: rgba(0, 0, 0, 0.85); display: none; 
             justify-content: center; align-items: center; z-index: 3000;
         }
-        .zoom-content { max-width: 320px; width: 85%; background: white; border-radius: 12px; overflow: hidden; }
-        .zoom-img { width: 100%; height: 250px; object-fit: cover; }
-        .letter-card { padding: 20px; text-align: center; }
+        .zoom-content { max-width: 320px; width: 85%; background: white; border-radius: 12px; overflow: hidden; animation: popIn 0.3s ease; }
+        .zoom-img { width: 100%; height: 280px; object-fit: cover; display: block; }
+        .letter-card { padding: 20px; text-align: center; border-top: 1px solid #eee; }
 
-        /* --- SLIDESHOW OVERLAY (FIXED FOR NO SCROLL) --- */
+        /* --- SLIDESHOW OVERLAY (MOBILE FRIENDLY) --- */
         #slideshow-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-gradient); display: none;
             flex-direction: column; justify-content: center; align-items: center; z-index: 4000;
-            overflow: hidden; /* Prevent body scroll */
-            padding: 10px;
+            overflow: hidden; padding: 15px;
         }
 
-        /* Pinaliit na Frame */
         .slideshow-frame {
-            position: relative; 
-            width: 200px; height: 250px; /* Pinalit mula 260x320 */
-            background: white; padding: 10px 10px 35px 10px;
+            position: relative; width: 180px; height: 230px; 
+            background: white; padding: 10px 10px 30px 10px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border-radius: 2px; margin-bottom: 15px;
-            flex-shrink: 0; /* Para hindi mapitpit sa maliit na screen */
+            border-radius: 2px; margin-bottom: 15px; flex-shrink: 0;
         }
 
         .slide-img-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
-        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; object-fit: cover; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease; object-fit: cover; }
         .slide.active { opacity: 1; }
 
-        /* Scrollable Letter Box */
         .main-letter-box {
-            width: 90%; max-width: 400px;
-            max-height: 40vh; /* Para hindi lumampas sa screen */
+            width: 90%; max-width: 400px; max-height: 45vh;
             background: rgba(255, 255, 255, 0.95);
             padding: 20px; border-radius: 15px;
-            text-align: left; font-size: 0.85rem;
+            text-align: left; font-size: 0.9rem;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            line-height: 1.6;
-            overflow-y: auto; /* Dito na mag-scroll ang text kung mahaba */
-            -webkit-overflow-scrolling: touch;
+            line-height: 1.6; overflow-y: auto;
         }
 
-        .signature { display: block; width: 100%; text-align: right; margin-top: 10px; color: var(--deep-rose); font-weight: bold; }
+        .signature { display: block; width: 100%; text-align: right; margin-top: 15px; color: var(--deep-rose); font-weight: bold; }
 
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: var(--deep-rose); cursor: pointer; z-index: 4005; }
-        .heart { position: fixed; color: rgba(255, 77, 109, 0.5); pointer-events: none; z-index: 4001; animation: float 4s linear infinite; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2.5rem; color: var(--deep-rose); cursor: pointer; z-index: 4005; }
+        .heart { position: fixed; color: rgba(255, 77, 109, 0.4); pointer-events: none; z-index: 4001; animation: float 4s linear infinite; }
         
         @keyframes float { 0% { transform: translateY(110vh); } 100% { transform: translateY(-10vh); opacity: 0; } }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -121,7 +121,9 @@
     </div>
 
     <div id="main-content">
-        <h1 style="color: var(--deep-rose);">30 Months of Us</h1>
+        <h1 style="color: var(--deep-rose); margin-top: 10px;">30 Months of Us</h1>
+        <p style="color: #666; margin-bottom: 20px;">Memories of 912 days...</p>
+
         <div class="gallery" id="photo-gallery">
             <div class="photo-card" style="--r: -2deg; transition-delay: 0.1s;" onclick="openZoom(this, 'Mahal na mahal kita mela ko.')"><img src="1.jpg"></div>
             <div class="photo-card" style="--r: 2deg; transition-delay: 0.2s;" onclick="openZoom(this, 'Sana maging happyyy ka sa smol effort ko na to.')"><img src="2.jpg"></div>
@@ -131,14 +133,15 @@
             <div class="photo-card" style="--r: 1deg; transition-delay: 0.6s;" onclick="openZoom(this, 'Maraming Salamat at natagpuan kitaa baby ko.')"><img src="6.jpg"></div>
             <div class="photo-card" style="--r: -2deg; transition-delay: 0.7s;" onclick="openZoom(this, 'Happy 30th month! baby ko!!!')"><img src="7.jpg"></div>
         </div>
+
         <button class="btn" onclick="startSlideshow()">Open for more surprise ✨</button>
-    </div>
+        <div style="height: 50px;"></div> </div>
 
     <div id="zoom-overlay" onclick="closeZoom()">
         <div class="zoom-content" onclick="event.stopPropagation()">
             <img class="zoom-img" id="zoomed-image" src="">
             <div class="letter-card">
-                <strong>Message:</strong>
+                <strong style="color: var(--deep-rose);">Message:</strong>
                 <p id="letter-text"></p>
             </div>
         </div>
@@ -160,7 +163,7 @@
         </div>
 
         <div class="main-letter-box">
-            <strong style="color: var(--deep-rose);">To my Baby,</strong><br>
+            <strong style="color: var(--deep-rose);">To my Baby,</strong><br><br>
             Hello Baby ko 30 months na tayong magkakilala sa mundong ito, maraming salamat at natagpuan kita. Palagi kitang miss kung alam mo lang pero yun nga may mga priorities din tayo na dapat nating unahin muna dahil alam ko one day e hindi na hadlang ang layo na to sa pag sasama natin. Maraming salamat sa libre mo na walang halong sumbat, sa effort sa lahat lahat Maraming Salamat baby ko. Salamat dahil pag mainit na ulo ko e nagagwa mo pang sabayan at painitin pa lalo HAHAHAHAHHA tunay yan mga ayaw mag baba ng pride e ano, pero yun nga sa mga araw na gulong gulo ako at pagod sa gawain sana pilitin mo pa din ako intindihin. Sana ma appreciate mo ang kaunting effort ko na ito. Mahal na Mahal kita baby ko, Masaya ako na mag kakilala tayo for 912 days sa mundong ito. Iloveyouuualways babyy ko🥰🥰🥰🥰🥰.<br>
             <span class="signature">Love, Bebe Andrei</span>
         </div>
